@@ -1,2 +1,2 @@
-# public-scripts
-My public scripts
+# pub
+Scripts which can be public sometimes in future.
