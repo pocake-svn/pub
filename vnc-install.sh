@@ -80,7 +80,7 @@ echo 'PIDFile=/home/%u/.vnc/%H%i.pid'
 echo "ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill %i > /dev/null 2>&1 || :'"
 echo 'ExecStart=/usr/bin/vncserver %i -geometry 1920x1080 -alwaysshared -fg'
 echo 'ExecStop=/usr/bin/sudo systemctl restart vncsever@:1.service'
-echo 'TemeoutSec=60'
+echo 'TimeoutSec=60'
 echo 'Restart=always'
 
 echo ' '
