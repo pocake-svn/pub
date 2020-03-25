@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #  Script to install TigerVNC and make all necessary changes to prepare to use it
-#  Version 20200324-2 Ready for test
+#  Version 20200325-2 Removed start service. Needs reboot.
 #  by Andrey Ivanov
 #  TODO: 2.Do I need any logging and notification?
 #        3.Add error handling
@@ -89,6 +89,6 @@ echo 'WantedBy=multi-user.target'
 echo ' ') | sudo tee -a /etc/systemd/system/vncserver@:1.service >/dev/null
 
 #Set vncserver to autostart and start service. At that time the server can not be enabled and started.
-/usr/bin/sudo systemctl daemon-reload
-/usr/bin/sudo systemctl start vnserver@:1
-/usr/bin/sudo systemctl enable vnserver@:1
+#/usr/bin/sudo systemctl daemon-reload
+#/usr/bin/sudo systemctl start vnserver@:1
+#/usr/bin/sudo systemctl enable vnserver@:1
