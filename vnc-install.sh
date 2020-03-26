@@ -1,11 +1,10 @@
 #!/bin/bash
 #
 #  Script to install TigerVNC and make all necessary changes to prepare to use it
-#  Version 20200325-2 Removed start service. Needs reboot.
+#  Version 20200326-1 Use vncserver fro initial configuration
 #  by Andrey Ivanov
 #  TODO: 2.Do I need any logging and notification?
 #        3.Add error handling
-
 
 #Variables
 CURRENT_USER=$(whoami)
@@ -44,11 +43,13 @@ fi
 echo "Installing TigerVNC .."
 /usr/bin/sudo pacman -Sy --noconfirm tigervnc
 
-echo "Creating TigerVNC config file for user $CURRENT_USER and in the directory $HOME_DERECTORY.."
-mkdir -p $HOME_DIRECTORY/.vnc
-/usr/bin/sudo chown -R $CURRENT_USER $HOME_DIRECTORY/.vnc
+#Set VNC pssword file
+echo 'VNC server first configuration...'
+/usr/bin/vncpasswd
 
-# Creating config xkstartup config file and make it executable
+# Modifying config xkstartup config file
+echo "Modifying TigerVNC config file for user $CURRENT_USER ..."
+echo "" > $HOME_DIRECTORY/.vnc/xstartup
 cat > $HOME_DIRECTORY/.vnc/xstartup << __END__
 #!/bin/sh
 unset SESSION_MANAGER
@@ -56,16 +57,11 @@ unset DBUS_SESSION_BUS_ADDRESS
 dbus-launch startkde
 __END__
 
-/usr/bin/sudo chmod 755 $HOME_DIRECTORY/.vnc/xstartup
-
+echo "" > $HOME_DIRECTORY/.vnc/config
 #Creating config file with required resolution
 cat > $HOME_DIRECTORY/.vnc/config << __END__
 geometry=1920x1080
 __END__
-
-#Set VNC pssword file
-echo 'Please set your VNC server password'
-/usr/bin/vncpasswd
 
 #Creating service config file
 (echo '[Unit]'
@@ -89,6 +85,6 @@ echo 'WantedBy=multi-user.target'
 echo ' ') | sudo tee -a /etc/systemd/system/vncserver@:1.service >/dev/null
 
 #Set vncserver to autostart and start service. At that time the server can not be enabled and started.
-#/usr/bin/sudo systemctl daemon-reload
-#/usr/bin/sudo systemctl start vnserver@:1
-#/usr/bin/sudo systemctl enable vnserver@:1
+/usr/bin/sudo systemctl daemon-reload
+/usr/bin/sudo systemctl start vnserver@:1
+/usr/bin/sudo systemctl enable vnserver@:1
